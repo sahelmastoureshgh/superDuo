@@ -1,15 +1,24 @@
 package barqsoft.footballscores;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by yehya khaled on 3/3/2015.
  */
 public class Utilies
 {
-    public static final int SERIE_A = 357;
     public static final int PREMIER_LEGAUE = 354;
-    public static final int CHAMPIONS_LEAGUE = 362;
-    public static final int PRIMERA_DIVISION = 358;
-    public static final int BUNDESLIGA = 351;
+    public static final int BUNDESLIGA        = 394;
+    public static final int LIGUE             = 396;
+    public static final int PREMIER_LEAGUE    = 398;
+    public static final int PRIMERA_DIVISION  = 399;
+    public static final int SEGUNDA_DIVISION  = 400;
+    public static final int SERIE_A           = 401;
+    public static final int PRIMERA_LIGA      = 402;
+    public static final int EREDIVISIE        = 404;
+    public static final int CHAMPIONS_LEAGUE  = 405;
+    private static final String LOG_TAG = Utilies.class.getSimpleName();
     public static String getLeague(int league_num)
     {
         switch (league_num)
@@ -84,4 +93,17 @@ public class Utilies
             default: return R.drawable.no_icon;
         }
     }
+    /**
+     * Converts db date format to the format "yyyy-MM-dd"
+     * @param dateInMillis The db formatted date string, expected to be of the form specified
+     *                in Utility.DATE_FORMAT
+     * @return The day in the form of a string formatted "yyyy-MM-dd"
+     */
+    public static String getFormattedDate( long dateInMillis ) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String currentDate = simpleDateFormat.format(new Date(dateInMillis));
+        return currentDate;
+    }
+
+
 }

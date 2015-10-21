@@ -31,6 +31,7 @@ import barqsoft.footballscores.R;
 public class myFetchService extends IntentService
 {
     public static final String LOG_TAG = "myFetchService";
+    public static final String ACTION_DATA_UPDATED = "barqsoft.footballscores.ACTION_DATA_UPDATED";
     public myFetchService()
     {
         super("myFetchService");
@@ -224,6 +225,7 @@ public class myFetchService extends IntentService
                             Date fragmentdate = new Date(System.currentTimeMillis()+((i-2)*86400000));
                             SimpleDateFormat mformat = new SimpleDateFormat("yyyy-MM-dd");
                             mDate=mformat.format(fragmentdate);
+
                         }
                     }
                     catch (Exception e)
@@ -264,6 +266,9 @@ public class myFetchService extends IntentService
             values.toArray(insert_data);
             inserted_data = mContext.getContentResolver().bulkInsert(
                     DatabaseContract.BASE_CONTENT_URI,insert_data);
+            if(inserted_data>0){
+                updateWidgets();
+            }
 
             //Log.v(LOG_TAG,"Succesfully Inserted : " + String.valueOf(inserted_data));
         }
@@ -272,6 +277,13 @@ public class myFetchService extends IntentService
             Log.e(LOG_TAG,e.getMessage());
         }
 
+    }
+    private void updateWidgets() {
+        Context context = getApplicationContext();
+        // Setting the package ensures that only components in our app will receive the broadcast
+        Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED)
+                .setPackage(context.getPackageName());
+        context.sendBroadcast(dataUpdatedIntent);
     }
 }
 
