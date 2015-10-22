@@ -23,7 +23,7 @@ import barqsoft.footballscores.Utilies;
  * <p/>
  * helper methods.
  */
-public class footballScoreWidgetIntentService extends IntentService {
+public class FootballScoreWidgetIntentService extends IntentService {
     private static final String ACTION_FOOTBALL_SCORE_UPDATE = "barqsoft.footballscores.widget.action.FOOTBALL_SCORE_UPDATE";
     private static final String[] FOOTBALLSCORE_COLUMNS = {
             DatabaseContract.scores_table.MATCH_ID,
@@ -51,14 +51,14 @@ public class footballScoreWidgetIntentService extends IntentService {
      * @see IntentService
      */
     public static void startActionFootballScoreUpdate(Context context) {
-        Intent intent = new Intent(context, footballScoreWidgetIntentService.class);
+        Intent intent = new Intent(context, FootballScoreWidgetIntentService.class);
         intent.setAction(ACTION_FOOTBALL_SCORE_UPDATE);
         context.startService(intent);
     }
 
 
-    public footballScoreWidgetIntentService() {
-        super("footballScoreWidgetIntentService");
+    public FootballScoreWidgetIntentService() {
+        super("FootballScoreWidgetIntentService");
     }
 
     @Override
@@ -79,13 +79,16 @@ public class footballScoreWidgetIntentService extends IntentService {
         // Retrieve all of the Today widget ids: these are the widgets we need to update
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this,
-                footballScoreWidget.class));
+                FootballScoreWidget.class));
 
         String todayDate = Utilies.getFormattedDate(System.currentTimeMillis());
         Uri FootballScoreUri = DatabaseContract.scores_table.buildScoreWithDate();
         Cursor data = getContentResolver().query(FootballScoreUri, FOOTBALLSCORE_COLUMNS, null,
                 new String[] { todayDate }, DatabaseContract.scores_table.HOME_GOALS_COL + " ASC");
         if (data == null) {
+            RemoteViews emptyViews = new RemoteViews(getPackageName(), R.layout.football_score_widget);
+            emptyViews.setTextViewText(R.id.score_textview,"No data found");
+
             return;
         }
         if (!data.moveToFirst()) {
